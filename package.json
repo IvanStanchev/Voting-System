@@ -1,0 +1,23 @@
+{
+  "name": "voting-system",
+  "version": "1.0.0",
+  "description": "Diploma project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvanStanchev/Voting-System.git"
+  },
+  "author": "Ivan Stanchev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IvanStanchev/Voting-System/issues"
+  },
+  "homepage": "https://github.com/IvanStanchev/Voting-System#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "hardhat": "^2.12.4"
+  }
+}
