@@ -5,7 +5,7 @@ pragma abicoder v2;
 contract Vote {    
     uint8 public choices;
 
-    event Results(mapping(uint8 => uint24) votes);
+    event Winner(uint8);
 
     mapping(address => bool) public voters; // voters addresses and voting status 
     mapping(uint8 => uint24) public votes; // votes for each party/politician
@@ -15,14 +15,16 @@ contract Vote {
     }
 
     function vote(uint8 _choiceId) public {
-        require(voters(msg.sender) == false, "You have already voted");
+        require(voters[msg.sender] == false, "You have already voted");
         voters[msg.sender] = true;
         votes[_choiceId] += 1;
     }
 
-    function() external payable {
-        require(msg.sender.send(msg.value), "Transaction failed");
+    receive() external payable {
+        require(payable(msg.sender).send(msg.value), "Transaction failed");
+    }    
+
+    fallback() external payable {
+        require(payable(msg.sender).send(msg.value), "Transaction failed");
     }
-
-
 }
