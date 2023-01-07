@@ -15,15 +15,22 @@ contract Vote {
     //Mapping of choice id to number of votes for it
     mapping(uint8 => uint24) public votes;
 
+    modifier voteClosed(bool closed) {
+        if(closed)
+            require(block.timestamp < endTimestamp, "Voting has closed");
+        else
+            require(block.timestamp > endTimestamp, "Voting has not closed");
+        _;
+    }
+
     constructor(uint8 _choices, uint daysAfter){
         choices = _choices;
         endTimestamp = block.timestamp + daysAfter * 1 days;
     }
 
-    function vote(uint8 _choiceId) public {
+    function vote(uint8 _choiceId) public voteClosed(true) {
         require((_choiceId > 0) && (_choiceId <= choices), "Invalid choice");
         require(voterChoices[msg.sender] == 0, "You have already voted");
-        require(block.timestamp < endTimestamp, "Voting has closed");
         voterChoices[msg.sender] = _choiceId;
         votes[_choiceId] += 1;
     }
