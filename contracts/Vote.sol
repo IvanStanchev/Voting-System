@@ -17,11 +17,13 @@ contract Vote is Ownable {
     //Mapping of choice id to number of votes for it
     mapping(uint8 => uint24) public votes;
 
-    modifier voteClosed(bool closed) {
-        if(closed)
-            require(block.timestamp < endTimestamp, "Voting has closed");
-        else
-            require(block.timestamp > endTimestamp, "Voting has not closed");
+    modifier voteEnded {
+        require(block.timestamp < endTimestamp, "Voting has ended");
+        _;
+    }
+        
+    modifier voteNotEnded{
+        require(block.timestamp > endTimestamp, "Voting has not ended");
         _;
     }
 
@@ -30,7 +32,7 @@ contract Vote is Ownable {
         endTimestamp = block.timestamp + daysAfter * 1 days;
     }
 
-    function vote(uint8 _choiceId) public voteClosed(true) {
+    function vote(uint8 _choiceId) public voteNotEnded {
         require((_choiceId > 0) && (_choiceId <= choices), "Invalid choice");
         require(voterChoices[msg.sender] == 0, "You have already voted");
         voterChoices[msg.sender] = _choiceId;
