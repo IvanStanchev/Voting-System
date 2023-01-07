@@ -43,6 +43,10 @@ contract Vote is Ownable {
         votes[_choiceId] += 1;
     }
 
+    function readVoteById(uint8 id) public view onlyOwner voteEnded validateChoiceId(id) returns(uint24) {
+        return votes[id];
+    }
+
     receive() external payable {
         revert("Error: receive function cannot be called.");
     }
