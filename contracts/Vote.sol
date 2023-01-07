@@ -2,7 +2,9 @@
 pragma solidity ^0.8.17;
 pragma abicoder v2;
 
-contract Vote {    
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract Vote is Ownable {    
     uint8 public choices;
     uint public endTimestamp; 
 
