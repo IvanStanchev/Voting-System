@@ -27,13 +27,17 @@ contract Vote is Ownable {
         _;
     }
 
+    modifier validateChoiceId(uint8 id) {
+        require(id > 0 && id <= choices, "Invalid choice");
+        _;
+    }
+
     constructor(uint8 _choices, uint daysAfter){
         choices = _choices;
         endTimestamp = block.timestamp + daysAfter * 1 days;
     }
 
-    function vote(uint8 _choiceId) public voteNotEnded {
-        require((_choiceId > 0) && (_choiceId <= choices), "Invalid choice");
+    function vote(uint8 _choiceId) public voteNotEnded validateChoiceId(_choiceId) {
         require(voterChoices[msg.sender] == 0, "You have already voted");
         voterChoices[msg.sender] = _choiceId;
         votes[_choiceId] += 1;
