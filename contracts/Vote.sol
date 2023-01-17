@@ -18,12 +18,12 @@ contract Vote is Ownable {
     mapping(uint8 => uint24) public votes;
 
     modifier voteEnded {
-        require(block.timestamp < endTimestamp, "Voting has ended");
+        require(block.timestamp > endTimestamp, "Voting has ended");
         _;
     }
         
     modifier voteNotEnded{
-        require(block.timestamp > endTimestamp, "Voting has not ended");
+        require(block.timestamp < endTimestamp, "Voting has not ended");
         _;
     }
 
