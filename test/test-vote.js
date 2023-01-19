@@ -14,7 +14,7 @@ describe('Vote contract', () => {
     beforeEach(async () => {
         contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
         provider = new ethers.providers.JsonRpcProvider();
-        [owner] = await ethers.getSigners();
+        [owner, addr1, addr2] = await ethers.getSigners();
         vote = await ethers.getContractFactory("Vote");
     });
 
@@ -68,6 +68,21 @@ describe('Vote contract', () => {
         let result = await contract.readVoteById(2);
         expect(result).to.equal(1);
     });
+
+    it("should return all votes when readAllVote is called", async() => {
+        const contract = await vote.deploy(3, 3);
+        await contract.vote(1);
+        await contract.connect(addr1).vote(2);
+        await contract.connect(addr2).vote(2);
+
+        await time.increase(time.duration.days(10));
+        let results = await contract.readAllVote();
+        expect(results[0]).to.equal(1);
+        expect(results[1]).to.equal(2);
+        expect(results[2]).to.equal(0);
+        
+        
+    })    
 
     it('should invoke the receive function when tokens are sent', async () => {
         const contract = await vote.deploy(3, 5);
