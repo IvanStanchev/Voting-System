@@ -8,8 +8,6 @@ contract Vote is Ownable {
     uint8 public choices;
     uint public endTimestamp; 
 
-    event Winner(uint8);
-
     // Mapping of voter address to voted choice
     // Voting choices ids start from 1
     mapping(address => uint8) public voterChoices;
@@ -45,6 +43,14 @@ contract Vote is Ownable {
 
     function readVoteById(uint8 id) public view onlyOwner voteEnded validateChoiceId(id) returns(uint24) {
         return votes[id];
+    }
+
+    function readAllVote() public view onlyOwner voteEnded returns(uint24[] memory) {
+        uint24[] memory results = new uint24[](choices);
+        for(uint8 i = 0; i < choices; i++){
+            results[i] = readVoteById(i+1); 
+        }
+        return results;
     }
 
     receive() external payable {
