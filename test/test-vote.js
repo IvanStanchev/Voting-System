@@ -1,5 +1,8 @@
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
+const { time } = require('@nomicfoundation/hardhat-network-helpers');
+
+
 const Vote = require('../artifacts/contracts/Vote.sol/Vote.json');
 
 describe('Vote contract', () => {
@@ -13,7 +16,6 @@ describe('Vote contract', () => {
         provider = new ethers.providers.JsonRpcProvider();
         [owner] = await ethers.getSigners();
         vote = await ethers.getContractFactory("Vote");
-        // vote = await VoteContractFactory.deploy(owner.address, contractAddress);
     });
 
     it('should initialize the contract with the correct number of choices and end timestamp', async () => {
@@ -51,17 +53,12 @@ describe('Vote contract', () => {
         await expect(contract.readVoteById(0)).to.be.rejected;
         await expect(contract.readVoteById(4)).to.be.rejected;
     });
-
-    // it('should not accept payments', async () =>{
-    //     const contract = await vote.deploy(3, 5);
-    //     expect (await owner.transfer(contract.address, 10)).to.be.revertedWith("Error: receive function cannot be called.");
-    // } )
     
-     it('should invoke the receive function', async () => {
+    it('should invoke the receive function', async () => {
         const contract = await vote.deploy(3, 5);
         const tx = owner.sendTransaction({
             to: contract.address,
-            value: ethers.utils.parseEther("1") // 1 ether
+            value: ethers.utils.parseEther("1")
         });
         await expect(tx).to.be.revertedWith("Error: receive function cannot be called.");
         
