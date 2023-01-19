@@ -26,12 +26,18 @@ describe('Vote contract', () => {
         expect(endTimestamp).to.be.closeTo(Math.floor(Date.now() / 1000) + (5 * 86400), 2);
     });
 
-    it('should only allow voting before end timestamp', async () => {
+    it('should not allow voting after end timestamp', async () => {
         const contract = await vote.deploy(3, 0);
         await expect(contract.vote(1)).to.be.rejected;
     });
 
-    it('should only allow voting with valid choice ids', async () => {
+    it('should only allow voting once', async() => {
+        const contract = await vote.deploy(3, 5);
+        await expect(contract.vote(1));
+        await expect(contract.vote(1)).to.be.rejectedWith("You have already voted");
+    })
+
+    it('should not allow voting with invalid choice ids', async () => {
         const contract = await vote.deploy(3, 5);
         await expect(contract.vote(0)).to.be.rejected;
         await expect(contract.vote(4)).to.be.rejected;
@@ -54,7 +60,16 @@ describe('Vote contract', () => {
         await expect(contract.readVoteById(4)).to.be.rejected;
     });
     
-    it('should invoke the receive function', async () => {
+    it("Test readVoteById function returns correct number of votes when voting period has ended and caller is owner", async () => {
+        const contract = await vote.deploy(5, 1);
+        await contract.vote(2); 
+        await time.increase(time.duration.days(2));
+        
+        let result = await contract.readVoteById(2);
+        expect(result).to.equal(1);
+    });
+
+    it('should invoke the receive function when tokens are sent', async () => {
         const contract = await vote.deploy(3, 5);
         const tx = owner.sendTransaction({
             to: contract.address,
@@ -63,8 +78,8 @@ describe('Vote contract', () => {
         await expect(tx).to.be.revertedWith("Error: receive function cannot be called.");
         
     });
-    
-    it('should invoke the fallback function', async () => {
+
+    it('should invoke the fallback function when calling a nonexistent method', async () => {
         const contract = await vote.deploy(3, 5);
         const nonExistentFuncSignature = 'nonExistentFunction(uint256,uint256)';
         const fakeContract = new ethers.Contract(
@@ -78,6 +93,5 @@ describe('Vote contract', () => {
         const tx = fakeContract[nonExistentFuncSignature](8, 4);
         await expect(tx).to.be.revertedWith("Error: fallback function cannot be called.");
     });
-    
 
 });
