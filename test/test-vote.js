@@ -77,11 +77,7 @@ describe('Vote contract', () => {
 
         await time.increase(time.duration.days(10));
         let results = await contract.readAllVote();
-        expect(results[0]).to.equal(1);
-        expect(results[1]).to.equal(2);
-        expect(results[2]).to.equal(0);
-        
-        
+        expect(results).to.emit([1,2,0]);        
     })    
 
     it('should invoke the receive function when tokens are sent', async () => {
