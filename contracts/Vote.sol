@@ -2,9 +2,7 @@
 pragma solidity ^0.8.17;
 pragma abicoder v2;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-contract Vote is Ownable {    
+contract Vote {    
     uint8 public choices;
     uint public endTimestamp; 
 
@@ -43,11 +41,11 @@ contract Vote is Ownable {
         votes[_choiceId] += 1;
     }
 
-    function readVoteById(uint8 id) public view onlyOwner voteEnded validateChoiceId(id) returns(uint24) {
+    function readVoteById(uint8 id) public view voteEnded validateChoiceId(id) returns(uint24) {
         return votes[id];
     }
 
-    function readAllVote() public onlyOwner voteEnded {
+    function readAllVote() public voteEnded {
         uint24[] memory results = new uint24[](choices);
         for(uint8 i = 0; i < choices; i++){
             results[i] = readVoteById(i+1); 
