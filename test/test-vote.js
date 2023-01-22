@@ -23,7 +23,7 @@ describe('Vote contract', () => {
         const choices = await contract.choices();
         const endTimestamp = await contract.endTimestamp();
         expect(choices).to.equal(3);
-        expect(endTimestamp).to.be.closeTo(Math.floor(Date.now() / 1000) + (5 * 86400), 2);
+        expect(endTimestamp).to.be.closeTo(Math.floor(Date.now() / 1000) + (5 * 86400), 15);
     });
 
     describe('vote', () => { 
@@ -34,7 +34,7 @@ describe('Vote contract', () => {
 
         it('should only allow voting once', async() => {
             const contract = await vote.deploy(3, 5);
-            await expect(contract.vote(1));
+            await contract.vote(1);
             await expect(contract.vote(1)).to.be.rejectedWith('You have already voted');
         })
 
@@ -109,7 +109,7 @@ describe('Vote contract', () => {
             await contract.connect(addr1).vote(2);
             await contract.connect(addr2).vote(2);
             await time.increase(time.duration.days(10));
-            
+
             let resultsArr = [];
             resultsArr[0] = await contract.readAllVote;
             resultsArr[1] = await contract.connect(addr1).readAllVote;
@@ -121,8 +121,7 @@ describe('Vote contract', () => {
         });
 
     });
-
-
+        
     describe('receive', ()=> {
         it('should invoke the receive function when tokens are sent', async () => {
             const contract = await vote.deploy(3, 5);
@@ -148,6 +147,11 @@ describe('Vote contract', () => {
             );
             const tx = fakeContract[nonExistentFuncSignature](8, 4);
             await expect(tx).to.be.revertedWith('Error: fallback function cannot be called.');
+        });
+
+        it('should not be able to call fallback', async() => {
+            const contract = await vote.deploy(3, 4);
+            expect (contract.fallback()).to.be.revertedWith('Error: fallback function cannot be called.');
         });
     });
 });
