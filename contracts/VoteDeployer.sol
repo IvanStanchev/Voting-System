@@ -3,17 +3,17 @@ pragma solidity ^0.8.17;
 pragma abicoder v2;
 
 import "./Vote.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ElectionsDeployer is Ownable {    
-    Vote vote;
-    Vote[] public electionsList; 
+contract VoteDeployer {    
+    mapping(address => address[]) public contractsAddressList; 
 
-    event Results(uint24[] results);
+    Vote public vote; 
+    event DeployedContract(address contractAddress);
 
-    function deploy(uint8 _choices, uint daysAfter) public {
+    function deployVote(uint8 _choices, uint daysAfter) public returns(address){
         vote = new Vote(_choices, daysAfter);
-        electionsList.push(vote);
+        contractsAddressList[msg.sender].push(address(vote));
+        return address(vote);
     }
 
     receive() external payable {
