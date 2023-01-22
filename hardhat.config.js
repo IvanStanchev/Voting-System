@@ -1,12 +1,12 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("@nomiclabs/hardhat-etherscan");
+require("solidity-coverage");
 require("dotenv").config("./.env");
 /** @type import('hardhat/config').HardhatUserConfig */
 
 const privateKey = process.env.privateKey;
 
 module.exports = {
-  defaultNetwork: "localhost",
   networks: {
     hardhat: {
     },
