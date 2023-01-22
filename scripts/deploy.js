@@ -1,16 +1,17 @@
-const ethers = require("hardhat").ethers;
+const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const endTimestamp = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  const [deployer] = await ethers.getSigners();
+  console.log("Deploying contracts with the account:", deployer.address);
 
-  const Vote = await ethers.getContractFactory("Vote");
-  const vote = await Vote.deploy(3, endTimestamp);
+  const VoteDeployer = await hre.ethers.getContractFactory("VoteDeployer");
+  const voteDeployer = await VoteDeployer.deploy();
 
-  await vote.deployed();
+  await voteDeployer.deployed();
 
-  console.log(`Vote contract with 3 choices and end timestamp ${endTimestamp} deployed to ${vote.address}`);
+  console.log(
+    `VoteDeployer contract deployed successfully to ${voteDeployer.address}`
+  );
 }
 
 main().catch((error) => {
