@@ -13,7 +13,7 @@ contract Vote {
     mapping(address => uint8) public voterChoices;
 
     //Mapping of choice id to number of votes for it
-    mapping(uint8 => uint24) public votes;
+    mapping(uint8 => uint24) private votes;
 
     modifier voteEnded {
         require(block.timestamp > endTimestamp, "Voting has not ended");
