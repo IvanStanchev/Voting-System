@@ -10,10 +10,10 @@ contract VoteDeployer {
     Vote public vote; 
     event DeployedContract(address contractAddress);
 
-    function deployVote(uint8 _choices, uint daysAfter) public returns(address){
+    function deployVote(uint8 _choices, uint daysAfter) public {
         vote = new Vote(_choices, daysAfter);
         contractsAddressList[msg.sender].push(address(vote));
-        return address(vote);
+        emit DeployedContract(address(vote));
     }
 
     receive() external payable {
