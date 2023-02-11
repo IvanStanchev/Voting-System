@@ -103,7 +103,7 @@ describe('Vote contract', () => {
             await expect(results).to.be.revertedWith('Voting has not ended');
         });
 
-        it('should everyone to call readAllVote after voting period has ended', async() => {
+        it('should allow everyone to call readAllVote after voting period has ended', async() => {
             const contract = await vote.deploy(3, 3);
             await contract.vote(1);
             await contract.connect(addr1).vote(2);
