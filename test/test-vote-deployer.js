@@ -47,6 +47,13 @@ describe('Vote Deployer contract', () => {
             let secondVote= await deployer.deployVote(4, 4);
             expect (secondVote).to.not.be.null;
         });
+
+        it('should emit event when it deploys a Vote contract', async () => {
+            let vote = await deployer.deployVote(4, 8);
+            expect (vote)
+                .to.emit(deployer, "DeployedContract")
+                .withArgs(deployer.vote.address);
+        })
     });
 
 
