@@ -1,0 +1,24 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: VoteDeployer
+    network: goerli
+    source:
+      address: "0xc64Bc354F8450aEC8765f29cE73d1e4790619F07"
+      abi: VoteDeployer
+      startBlock: 8474596
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DeployedContract
+      abis:
+        - name: VoteDeployer
+          file: ./abis/VoteDeployer.json
+      eventHandlers:
+        - event: DeployedContract(address)
+          handler: handleDeployedContract
+      file: ./src/vote-deployer.ts
