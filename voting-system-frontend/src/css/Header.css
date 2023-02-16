@@ -1,0 +1,19 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 2.5rem; 
+    max-height: max-content;
+    width: 98%;
+    background-color: gray;
+    padding: 1rem;
+    margin: 0 auto;
+    position: fixed;
+    top: 0;
+}
+
+header > h1 {
+    font-size: 1.8rem;
+    height: 3rem;
+    width: 15rem;
+}
