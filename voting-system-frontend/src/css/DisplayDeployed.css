@@ -1,0 +1,15 @@
+.display-deployed-contracts {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2.5rem;
+}
+
+h4 {
+    word-wrap: break-word;
+    font-size: 0.9rem;
+}
+
+a {
+    color:rgb(55, 211, 128)
+}
