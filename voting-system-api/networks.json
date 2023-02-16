@@ -1,0 +1,8 @@
+{
+  "goerli": {
+    "VoteDeployer": {
+      "address": "0xc64Bc354F8450aEC8765f29cE73d1e4790619F07",
+      "startBlock": 8474596
+    }
+  }
+}
