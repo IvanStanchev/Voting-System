@@ -3,18 +3,27 @@ import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Vote from "../ABI/Vote.json";
-import { convertTimestampToLocalDateTime } from './DatetimeUtils';
+import { convertTimestampToLocalDateTime, timestampBeforeNow } from './DatetimeUtils';
 
 
 function Elections() {
     const [provider, setProvider] = useState(null);
     const [endTimestamp, setEndTimestamp] = useState("");
+    const [electionsContract, setElectionsContract] = useState([]);
+    const [choices, setChoices] = useState([]);
+    const [voteResults, setVoteResults] = useState([]);
     const { addr } = useParams()
 
 
     useEffect(() => {
         fetchElections()
-    })
+    }, [])
+    useEffect(() => {
+        countChoices()
+    }, [])
+    useEffect(() => {
+        getVoteResults()
+    }, [])
 
 
     async function fetchElections() {
@@ -23,6 +32,7 @@ function Elections() {
         const signer = provider.getSigner();
         const contract = new ethers.Contract(addr, Vote.abi, signer);
         setEndTimestamp(await contract.endTimestamp());
+        setElectionsContract(contract);
 
         return contract;
     }
@@ -30,26 +40,78 @@ function Elections() {
     async function vote(choice) {
         const contract = await fetchElections();
         let tx = await contract.vote(choice);
-        await tx.wait();
         alert("Voted successfully!");
     }
 
-    
-    return (   
+    async function countChoices() {
+        const choices = [];
+        const contract = await fetchElections();
+        for (let i = 1; i <= await contract.choices(); i++) {
+            choices.push(i);
+        }
+        setChoices(choices)
+        return choices;
+    }
+
+    async function getVoteResults() {
+        const results = [];
+        for (let i = 1; i <= choices.length; i++) {
+            results.push(await readVoteById(i));
+        }
+        setVoteResults(results);
+    }
+
+    async function readVoteById(choice) {
+        const contract = await fetchElections();
+        let tx = await contract.readVoteById(choice);
+        console.log(`tx: ${tx}`);
+        return tx;
+    }
+
+
+    return (
         <div className='display-deployed-contracts'>
-            <br /><br /><br /><br /><br /><br />    
+            <br /><br /><br /><br /><br /><br />
             <h4 className='contract-property'>Selected contract Id: {addr}</h4>
-            <h4> Vote ends in { convertTimestampToLocalDateTime(endTimestamp) }</h4>
-            <form>
-                <input id={"choice-id"} placeholder={"Choice Id"} /><br />
-                
-                <button type="button" onClick={async () => {
+            <h4> Vote end: {convertTimestampToLocalDateTime(endTimestamp)}</h4>
+            {/* {console.log(convertTimestampToLocalDateTime(endTimestamp))} */}
+            {console.log(`${convertTimestampToLocalDateTime(endTimestamp)}`)}
+            {console.log(`${convertTimestampToLocalDateTime(Date.now() / 1000)}`)}
+            {/* {console.log(new Date.now())} */}
+            {(!timestampBeforeNow(endTimestamp)) &&
+                <form>
+                    <input id={"choice-id"} placeholder={"Choice Id"} /><br />
+
+                    <button type="button" onClick={async () => {
                         const choice = document.getElementById("choice-id").value;
                         console.log(choice);
-                        await vote(choice);}}>
-                            VOTE
-                </button>
-            </form>
+                        await vote(choice);
+                    }}>
+                        VOTE
+                    </button>
+                </form>}
+            {(timestampBeforeNow(endTimestamp)) &&
+                
+                <button type="button" onClick={async () => { 
+                    await countChoices();
+                    console.log("Bomba: " + choices);
+                    await getVoteResults();  
+                }}>
+                    
+                    Results
+                </button>}
+                {   voteResults.length > 0 &&
+                    <div>
+                    <h4 className='contract-property'>Vote Results:</h4>    
+                    {choices.map((choice, index) => (
+                        <div key={index}>
+                            <br />
+                            <h4 className='contract-property'>Choice {choice} </h4>
+                            <h4 className='contract-property'>votes: { voteResults[choice-1]}</h4>
+                        </div>
+                    ))}
+                    </div>
+                }
         </div>
     )
 }
