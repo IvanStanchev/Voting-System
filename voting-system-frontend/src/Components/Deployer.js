@@ -18,7 +18,6 @@ function Deployer() {
         let tx = await contract.deployVote(choices, daysAfter);
         await tx.wait();
         const vote_deployed = await contract.vote;
-        console.log(vote_deployed.address);
     }
 
     return (
@@ -30,9 +29,7 @@ function Deployer() {
                     <button type="button" onClick={async () => {
                         const choices = document.getElementById("choices-count").value;
                         const daysAfter = document.getElementById("days-after").value;
-                        console.log(choices, daysAfter)
                         const voteAddr = await deployVoteContract(choices, daysAfter);
-                        console.log(`Deployed ${voteAddr}`);
                     }}>Add elections</button>
                 </form>
                 <hr />

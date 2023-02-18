@@ -64,7 +64,6 @@ function Elections() {
     async function readVoteById(choice) {
         const contract = await fetchElections();
         let tx = await contract.readVoteById(choice);
-        console.log(`tx: ${tx}`);
         return tx;
     }
 
@@ -74,17 +73,12 @@ function Elections() {
             <br /><br /><br /><br /><br /><br />
             <h4 className='contract-property'>Selected contract Id: {addr}</h4>
             <h4> Vote end: {convertTimestampToLocalDateTime(endTimestamp)}</h4>
-            {/* {console.log(convertTimestampToLocalDateTime(endTimestamp))} */}
-            {console.log(`${convertTimestampToLocalDateTime(endTimestamp)}`)}
-            {console.log(`${convertTimestampToLocalDateTime(Date.now() / 1000)}`)}
-            {/* {console.log(new Date.now())} */}
             {(!timestampBeforeNow(endTimestamp)) &&
                 <form>
                     <input id={"choice-id"} placeholder={"Choice Id"} /><br />
 
                     <button type="button" onClick={async () => {
                         const choice = document.getElementById("choice-id").value;
-                        console.log(choice);
                         await vote(choice);
                     }}>
                         VOTE
@@ -94,10 +88,8 @@ function Elections() {
                 
                 <button type="button" onClick={async () => { 
                     await countChoices();
-                    console.log("Bomba: " + choices);
                     await getVoteResults();  
                 }}>
-                    
                     Results
                 </button>}
                 {   voteResults.length > 0 &&
