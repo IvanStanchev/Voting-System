@@ -3,4 +3,9 @@ function convertTimestampToLocalDateTime(timestamp) {
     return date.toLocaleString();
 }
 
-export {convertTimestampToLocalDateTime};
+function timestampBeforeNow(timestamp) {
+    const now = Date.now() /1000 | 0;
+    return timestamp < now;
+}
+
+export {convertTimestampToLocalDateTime, timestampBeforeNow};
