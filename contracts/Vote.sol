@@ -6,6 +6,8 @@ contract Vote {
     uint8 public choices;
     uint public endTimestamp; 
 
+    event Results(uint24[] results);
+
     // Mapping of voter address to voted choice
     // Voting choices ids start from 1
     mapping(address => uint8) public voterChoices;
@@ -23,14 +25,14 @@ contract Vote {
         _;
     }
 
-    modifier validateChoiceId(uint8 id) {
-        require(id > 0 && id <= choices, "Invalid choice");
+    modifier validateChoiceId(uint8 _id) {
+        require(_id > 0 && _id <= choices, "Invalid choice");
         _;
     }
 
-    constructor(uint8 _choices, uint daysAfter){
+    constructor(uint8 _choices, uint _daysAfter){
         choices = _choices;
-        endTimestamp = block.timestamp + daysAfter * 1 days;
+        endTimestamp = block.timestamp + _daysAfter * 1 days;
     }
 
     function vote(uint8 _choiceId) public voteNotEnded validateChoiceId(_choiceId) {
@@ -39,8 +41,8 @@ contract Vote {
         votes[_choiceId] += 1;
     }
 
-    function readVoteById(uint8 id) public view voteEnded validateChoiceId(id) returns(uint24) {
-        return votes[id];
+    function readVoteById(uint8 _id) public view voteEnded validateChoiceId(_id) returns(uint24) {
+        return votes[_id];
     }
 
     receive() external payable {
