@@ -10,7 +10,7 @@ contract VoteDeployer {
     Vote public vote; 
     event DeployedContract(address _contractAddress);
 
-    function deployVote(uint8 _choices, uint _daysAfter) public {
+    function deployVote(uint8 _choices, uint8 _daysAfter) public {
         vote = new Vote(_choices, _daysAfter);
         contractsAddressList[msg.sender].push(address(vote));
         emit DeployedContract(address(vote));

@@ -28,7 +28,7 @@ contract Vote {
         _;
     }
 
-    constructor(uint8 _choices, uint _daysAfter){
+    constructor(uint8 _choices, uint8 _daysAfter){
         choices = _choices;
         endTimestamp = block.timestamp + _daysAfter * 1 days;
     }
