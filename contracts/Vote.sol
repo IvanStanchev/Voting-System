@@ -6,8 +6,6 @@ contract Vote {
     uint8 public choices;
     uint public endTimestamp; 
 
-    event Results(uint24[] results);
-
     // Mapping of voter address to voted choice
     // Voting choices ids start from 1
     mapping(address => uint8) public voterChoices;
@@ -43,14 +41,6 @@ contract Vote {
 
     function readVoteById(uint8 id) public view voteEnded validateChoiceId(id) returns(uint24) {
         return votes[id];
-    }
-
-    function readAllVote() public voteEnded {
-        uint24[] memory results = new uint24[](choices);
-        for(uint8 i = 0; i < choices; i++){
-            results[i] = readVoteById(i+1); 
-        }
-        emit Results(results);
     }
 
     receive() external payable {
