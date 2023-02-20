@@ -6,8 +6,6 @@ contract Vote {
     uint8 public choices;
     uint public endTimestamp; 
 
-    event Results(uint24[] results);
-
     // Mapping of voter address to voted choice
     // Voting choices ids start from 1
     mapping(address => uint8) public voterChoices;
