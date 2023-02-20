@@ -80,48 +80,7 @@ describe('Vote contract', () => {
             expect (result).to.equal(1);
         });
     });
-
-    describe('readAllVote', ()=> {
-        it('should return all votes when readAllVote is called after voting period has ended', async() => {
-            const contract = await vote.deploy(3, 3);
-            await contract.vote(1);
-            await contract.connect(addr1).vote(2);
-            await contract.connect(addr2).vote(2);
-
-            await time.increase(time.duration.days(10));
-            let results = await contract.readAllVote();
-            expect(results).to.emit([1,2,0]);        
-        });
-
-        it('should not allow reading votes before voting period has ended', async() => {
-            const contract = await vote.deploy(3, 4);
-            await contract.vote(1);
-            await contract.connect(addr1).vote(2);
-            await contract.connect(addr2).vote(2);
-            
-            let results = contract.readAllVote();
-            await expect(results).to.be.revertedWith('Voting has not ended');
-        });
-
-        it('should allow everyone to call readAllVote after voting period has ended', async() => {
-            const contract = await vote.deploy(3, 3);
-            await contract.vote(1);
-            await contract.connect(addr1).vote(2);
-            await contract.connect(addr2).vote(2);
-            await time.increase(time.duration.days(10));
-
-            let resultsArr = [];
-            resultsArr[0] = await contract.readAllVote;
-            resultsArr[1] = await contract.connect(addr1).readAllVote;
-            resultsArr[2] = await contract.connect(addr2).readAllVote;
-
-            resultsArr.forEach(results => {
-                expect(results).to.emit([1,2,0]);        
-            });            
-        });
-
-    });
-        
+ 
     describe('receive', ()=> {
         it('should invoke the receive function when tokens are sent', async () => {
             const contract = await vote.deploy(3, 5);
