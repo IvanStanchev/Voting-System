@@ -35,7 +35,9 @@ function Header() {
 
     return (
         <header>
-            <h1>Voting System</h1>
+            <a className="title" href="/" target="_blank">
+                <h1>Voting System</h1>
+            </a>
             
             {!walletAddress && (
                 <button type="button" onClick={connectWallet} className='connect-wallet'>
