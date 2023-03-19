@@ -16,7 +16,6 @@ function Header() {
             const accounts = await window.ethereum.request({
                 method: "eth_requestAccounts",
             });
-            console.log(accounts[0]);
             alert(`Connected wallet with address: ${accounts[0]}`);
             return accounts[0];
         } catch (error) {
@@ -33,15 +32,22 @@ function Header() {
                 });
         }
     }
-  
+
     return (
-    <header>
-        <h1>Voting System</h1>
-        <button type="button" onClick={connectWallet} className='connect-wallet'>
-            Connect wallet
-        </button>
-    </header>
-  )
+        <header>
+            <h1>Voting System</h1>
+            
+            {!walletAddress && (
+                <button type="button" onClick={connectWallet} className='connect-wallet'>
+                Connect wallet
+                </button>
+            )}
+            {walletAddress && (
+                <h3>{walletAddress}</h3>
+
+            )}
+        </header>
+    )
 }
 
 export default Header
