@@ -17,3 +17,13 @@ header > h1 {
     height: 3rem;
     width: 15rem;
 }
+
+.title{
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease-in-out;
+}
+  
+.title:hover {
+color: rgb(9, 83, 179);
+}

@@ -4,16 +4,6 @@ body {
 
 }
 
-.title{
-  text-decoration: none;
-  color: inherit;
-  transition: color 0.2s ease-in-out;
-}
-
-.title:hover {
-  color: rgb(9, 83, 179);
-}
-
 main {
   margin: 3rem;
 }
