@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState } from 'react';
+import DataContext from './DataContext';
 import "../css/Header.css";
 
 function Header() {
-    const [walletAddress, setWalletAddress] = useState("");
+    const { sessionData, setSessionData } = useContext(DataContext)
+    const [showTooltip, setShowTooltip] = useState(false);
+
+    const handleMouseEnter = () => {
+        setShowTooltip(true);
+      };
+    
+      const handleMouseLeave = () => {
+        setShowTooltip(false);
+      };
 
     async function requestAccount() {
         console.log("Requesting account...");
@@ -28,25 +38,28 @@ function Header() {
         if (typeof window.ethereum !== 'undefined') {
             await requestAccount()
                 .then((address) => {
-                    setWalletAddress(address);
+                    setSessionData(address);
                 });
         }
     }
 
     return (
-        <header>
+        <header >
             <a className="title" href="/" target="_blank">
                 <h1>Voting System</h1>
             </a>
             
-            {!walletAddress && (
-                <button type="button" onClick={connectWallet} className='connect-wallet'>
+            {!sessionData && (
+                <button type="button" onClick={connectWallet} className='connect-wallet-btn'>
                 Connect wallet
                 </button>
             )}
-            {walletAddress && (
-                <h3>{walletAddress}</h3>
-
+            {sessionData && (
+                <h3 className="tooltip" onClick={() => setSessionData()} 
+                onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}> 
+                    {sessionData}
+                    <span className='tooltiptext'>Disconnect wallet</span>
+                </h3>
             )}
         </header>
     )

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Vote from "../ABI/Vote.json";
 import { convertTimestampToLocalDateTime, timestampBeforeNow } from './DatetimeUtils';
+import Loader from './Loader';
+import "../css/Elections.css"
 
 
 function Elections() {
@@ -11,7 +13,9 @@ function Elections() {
     const [endTimestamp, setEndTimestamp] = useState("");
     const [electionsContract, setElectionsContract] = useState([]);
     const [choices, setChoices] = useState([]);
+    const[ voterChoice, setVoteChoice ] = useState("")
     const [voteResults, setVoteResults] = useState([]);
+    const [loading, setLoading] = useState(false)
     const { addr } = useParams()
 
 
@@ -39,7 +43,7 @@ function Elections() {
 
     async function vote(choice) {
         const contract = await fetchElections();
-        let tx = await contract.vote(choice);
+        await contract.vote(choice);
         alert("Voted successfully!");
     }
 
@@ -69,41 +73,71 @@ function Elections() {
 
 
     return (
-        <div className='display-deployed-contracts'>
+        <div>
             <br /><br /><br /><br /><br /><br />
-            <h4 className='contract-property'>Selected contract Id: {addr}</h4>
-            <h4> Vote end: {convertTimestampToLocalDateTime(endTimestamp)}</h4>
-            {(!timestampBeforeNow(endTimestamp)) &&
-                <form>
-                    <input id={"choice-id"} placeholder={"Choice Id"} /><br />
+            <form className='contract-property'>
+                <h4 >Selected contract Id: {addr}</h4>
+                <h4> Vote end: {convertTimestampToLocalDateTime(endTimestamp)}</h4>
 
-                    <button type="button" onClick={async () => {
-                        const choice = document.getElementById("choice-id").value;
-                        await vote(choice);
-                    }}>
-                        VOTE
+                <form className="button-container">
+                {(!timestampBeforeNow(endTimestamp)) &&
+                    <>
+                        <input className="choice-id-input" 
+                            id={"choice-id"} 
+                            placeholder={"Choice Id"} /><br />
+                        
+                        <button className="vote-btn" type="button" onClick={async () => {
+                            const choice = document.getElementById("choice-id").value;
+                            setLoading(true)
+                            try {
+                                await vote(choice);
+                              } catch (error) {
+                                if (error.message.includes("execution reverted: You have already voted")) {
+                                  const errorContainer = document.getElementById("error-container");
+                                  errorContainer.textContent = "You have already voted. Cannot vote again.";
+                                } else if (error.message.includes("execution reverted: Invalid choice")) {
+                                    const errorContainer = document.getElementById("error-container");
+                                    errorContainer.textContent = "You have entered an invalid choice. Try again.";
+                                  }
+                              }
+                            setLoading(false)
+                            choice.value = ""
+                        }}>
+                            VOTE
+                        </button>
+                        <div id="error-container"></div>
+
+                        {loading && <Loader/>}
+                    </>
+                    }
+                {(timestampBeforeNow(endTimestamp)) &&
+                <>
+                    <button className="results-btn"
+                        type="button" onClick={async () => {
+                            setLoading(true)
+                            await countChoices();
+                            await getVoteResults();
+                            setLoading(false)
+                        }}>
+                        Results
                     </button>
-                </form>}
-            {(timestampBeforeNow(endTimestamp)) &&
-                
-                <button type="button" onClick={async () => { 
-                    await countChoices();
-                    await getVoteResults();  
-                }}>
-                    Results
-                </button>}
-                {   voteResults.length > 0 &&
+                    {loading && <Loader/>}
+                </>}
+                </form>
+                {voteResults.length > 0 &&
                     <div>
-                    <h4 className='contract-property'>Vote Results:</h4>    
-                    {choices.map((choice, index) => (
-                        <div key={index}>
-                            <br />
-                            <h4 className='contract-property'>Choice {choice} </h4>
-                            <h4 className='contract-property'>votes: { voteResults[choice-1]}</h4>
+                        <h4 >Vote Results:</h4>
+                        <div className='results'>
+                        {choices.map((choice, index) => (
+                            <div className='vote-result' key={index}>
+                                <h4 >Choice {choice} </h4>
+                                <h4 >votes: {voteResults[choice - 1]}</h4>
+                            </div>
+                        ))}
                         </div>
-                    ))}
                     </div>
                 }
+            </form>
         </div>
     )
 }
