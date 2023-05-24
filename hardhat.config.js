@@ -18,7 +18,7 @@ module.exports = {
       accounts: [privateKey],
     },
     sepolia: {
-      url: process.env.infuraGoerliUrl,
+      url: process.env.infuraSepoliaUrl,
       accounts: [privateKey],
     }
   },
