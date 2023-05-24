@@ -6,3 +6,45 @@
 .backapp {
     padding: 2.5rem;
 }
+
+
+.new-elections {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 2rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-elections-btn {
+    width: 50%;
+    background-color: #4d90fe;
+    color: #fff;
+    margin-top: 0.4rem;
+    padding: 0.6rem;
+    border: none;
+    border-radius: 0.4rem;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    min-width: 10rem;
+}
+
+.add-elections-btn:hover {
+    background-color: #2a569d;
+}
+
+.new-elections-input {
+    width: 60%;
+    padding: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 0.2rem;
+    font-size: 1rem;
+    min-width: 12rem;
+}
+
+.new-elections-input::placeholder {
+    text-align: center;
+}

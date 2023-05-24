@@ -1,16 +1,14 @@
 body {
-  background-color: black;
+  background: radial-gradient(circle at center, rgb(255, 255, 255) -15%, rgb(0, 148, 253) 100%);
+  background-attachment: fixed;
+  
   color: lightblue;
-
 }
 
 main {
   margin: 3rem;
 }
 
-.contract-property {
-  flex-wrap: wrap;
-}
 
 .App {
   text-align: left;
